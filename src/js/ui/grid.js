@@ -29,7 +29,7 @@ class Grid{
         //添加到container中
         this._$container.append($divArray);
     }
-    layout(){//调整方格
+    layout(){
         const width = $("span:first",this._$container).width();
         $("span",this._$container)
             .height(width)
