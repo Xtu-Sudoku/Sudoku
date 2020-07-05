@@ -132,9 +132,7 @@
 	            });
 	    }
 	
-	    //绑定事件
 	    bindPopup(popupNumbers) {
-	        //因为九宫格是动态生成的，所以使用事件代理方式来实现，this是个grid对象
 	        this._$container.on("click", "span", e => {
 	            const $cell = $(e.target);
 	            if ($cell.is(".fixed")) {
@@ -205,7 +203,7 @@
 	        this.layout();
 	    }
 	
-	}
+	};
 	
 	const generator = new Generator();
 	generator.generate();
@@ -507,7 +505,7 @@
 	            }
 	        }
 	    }
-	};
+	}
 	//测试
 	//const Generator = require("./generator");
 	//const Checker = require("./checker");

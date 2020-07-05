@@ -1,7 +1,7 @@
 const Toolkit = require("../core/toolkit");
 const Sudoku = require('../core/sudoku');
 const Generator = require("../core/generator");
-const Checker = require('../core/checker');
+const Checker = require("../core/checker");
 //九宫格生成在container中
 //生成九宫格
 class Grid {
@@ -46,9 +46,7 @@ class Grid {
             });
     }
 
-    //绑定事件
     bindPopup(popupNumbers) {
-        //因为九宫格是动态生成的，所以使用事件代理方式来实现，this是个grid对象
         this._$container.on("click", "span", e => {
             const $cell = $(e.target);
             if ($cell.is(".fixed")) {
@@ -119,7 +117,7 @@ class Grid {
         this.layout();
     }
 
-}
+};
 
 const generator = new Generator();
 generator.generate();

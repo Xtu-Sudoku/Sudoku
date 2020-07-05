@@ -27,7 +27,6 @@ body > * {
 .hidden {
   display: none;
 }
-
 /*九宫格*/
 .container {
   padding-left: 5%;
@@ -68,32 +67,38 @@ body > * {
   /*每行 最下边的*/
   border-bottom-width: 2px;
 }
-.container .row > span.fixed {/*迷盘数字背景调颜色*/
+.container .row > span.fixed {
+  /*迷盘数字背景调颜色*/
   background: #eeeeee;
 }
-.container .row > span.empty {/*隐藏数字颜色调成背景色*/
+.container .row > span.empty {
+  /*隐藏数字颜色调成背景色*/
   color: white;
 }
- .container .row > span.mark1 {//修改底色  左边小格子颜色
-   background: rgb(167,207,226);
- }
- .container .row > span.mark2 {//修改底色 右边
-   background: rgb(200,227,166);
- }
- .container .row > span.error {//<---
-    background: red;
-    &.empty{
-      color: red;
-    }
+.container .row > span.error {/*检测错误,标色*/
+  background: lightpink;
 }
-
+.container .row > span.error.empty {
+  color: lightpink;
+}
+.container .row > span.mark1 {/*修改底色  左边小格子颜色*/
+  background: #a7cfe2;
+}
+.container .row > span.mark1.empty {/*修改背景色*/
+  color: #a7cfe2;
+}
+.container .row > span.mark2 {/*修改底色  右边小格子颜色*/
+  background: #c8e3a6;
+}
+.container .row > span.mark2.empty {
+  color: #c8e3a6;
+}
 /*弹框*/
 .popup-num {
-  .container();
+  padding-left: 5%;
   position: absolute;
   padding-left: 0;
 }
-
 .popup-num .row > span {
   display: inline-block;
   cursor: pointer;
@@ -115,31 +120,36 @@ body > * {
 .popup-num .row > span.col_g_right {
   border-right-width: 1px;
 }
-.popup-num .row > span:first-child {/*左边界*/
+.popup-num .row > span:first-child {
+  /*左边界*/
   border-left-width: 2px;
 }
-.popup-num .row > span:last-child {/*右边界*/
+.popup-num .row > span:last-child {
+  /*右边界*/
   border-right-width: 2px;
 }
 .popup-num .row.row_g_bottom > span {
   border-bottom-width: 1px;
 }
-.popup-num .row:first-child > span {/*上边界*/
+.popup-num .row:first-child > span {
+  /*上边界*/
   border-top-width: 2px;
 }
-.popup-num .row:last-child > span {/*下边界*/
+.popup-num .row:last-child > span {
+  /*下边界*/
   border-bottom-width: 2px;
 }
 .popup-num .row > span.empty {
   color: white;
 }
-.popup-num .row > span.mark1 {/*左边小格子颜色*/
-  background: rgb(167,207,226);
+.popup-num .row > span.mark1 {
+  /*左边小格子颜色*/
+  background: #a7cfe2;
 }
-.popup-num .row > span.mark2 {/*右边小格子颜色*/
-  background: rgb(200,227,166);
+.popup-num .row > span.mark2 {
+  /*右边小格子颜色*/
+  background: #c8e3a6;
 }
-
 /*按钮*/
 .dashboard {
   position: absolute;

@@ -93,7 +93,7 @@ module.exports = class Checker{
             }
         }
     }
-};
+}
 //测试
 //const Generator = require("./generator");
 //const Checker = require("./checker");
