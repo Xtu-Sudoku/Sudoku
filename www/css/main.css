@@ -79,7 +79,7 @@ body > * {
 .popup-num {
   padding-left: 5%;
   position: absolute;
-  padding: 0px;
+  padding-left: 0;
 }
 .popup-num .row > span {
   display: inline-block;

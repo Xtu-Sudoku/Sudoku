@@ -45,13 +45,38 @@
 /***/ (function(module, exports, __webpack_require__) {
 
 	const Grid=__webpack_require__(1);
+	const PopupNumbers = __webpack_require__(5);
 	
 	//九宫格的显示
 	const grid = new Grid($("#container"));
 	grid.build();
 	grid.layout();
 	
+	//创建一个popupNumbers对象，绑定弹出窗口
+	const popupNumbers = new PopupNumbers($("#popupNumbers"));
+	grid.bindPopup(popupNumbers);
 	
+	$("#check").on("click", e => {
+	    popupNumbers.hide();
+	    if (grid.check()) {
+	        alert("Congruations!");
+	    }
+	});
+	
+	$("#reset").on("click", e => {
+	    popupNumbers.hide();
+	    grid.reset();
+	});
+	
+	$("#clear").on("click", e => {
+	    popupNumbers.hide();
+	    grid.clear();
+	});
+	
+	$("#rebuild").on("click", e => {
+	    popupNumbers.hide();
+	    grid.rebuild();
+	});
 
 
 /***/ }),
@@ -59,7 +84,8 @@
 /***/ (function(module, exports, __webpack_require__) {
 
 	const Toolkit = __webpack_require__(2);
-	const Generator = __webpack_require__(3);
+	const Sudoku = __webpack_require__(3);
+	const Generator = __webpack_require__(4);
 	//九宫格生成在container中
 	//生成九宫格
 	class Grid {
@@ -67,15 +93,10 @@
 	        this._$container = container;
 	    }
 	    build() {
-	        const generator = new Generator();
-	        generator.generate();
-	        const solutionMatrix = generator.matrix;
-	        var level = 5;
-	        const pazzleMatrix = solutionMatrix.map(row => {
-	            return row.map(cell => Math.random() * 9 < level ? 0 : cell);
-	        })
+	        const sudoku = new Sudoku();
+	        sudoku.make();
+	        const matrix = sudoku.puzzleMatrix;
 	
-	        const matrix = pazzleMatrix;
 	        //  	const matrix = Toolkit.matrix.makeMatrix();
 	
 	        const rowGroupClasses = ["row_g_top", "row_g_middle", "row_g_bottom"];
@@ -109,6 +130,75 @@
 	            });
 	    }
 	
+	    //绑定事件
+	    bindPopup(popupNumbers) {
+	        //因为九宫格是动态生成的，所以使用事件代理方式来实现，this是个grid对象
+	        this._$container.on("click", "span", e => {
+	            const $cell = $(e.target);
+	            popupNumbers.popup($cell);
+	        });
+	    }
+	
+	    //检查用户的结果，错误则进行标记
+	    check() {
+	        //获取需要检查的数据
+	        const $rows = this._$container.children();
+	        const data = $rows
+	            .map((rowIndex, div) => {
+	                return $(div).children()
+	                    .map((colIndex, span) => parseInt($(span).text()) || 0);
+	            })
+	            .toArray()
+	            .map($data => $data.toArray());
+	
+	        console.log(data);
+	
+	        const checker = new Checker(data);
+	        //检查成功
+	        if (checker.check()) {
+	            return true;
+	        }
+	
+	        //检查不成功
+	        const marks = checker.matrixMarks;
+	        this._$container.children()
+	            .each((rowIndex, div) => {
+	                $(div).children().each((colIndex, span) => {
+	                    const $span = $(span);
+	                    if ($span.is(".fixed") || marks[rowIndex][colIndex]) {
+	                        $span.removeClass("error");
+	                    } else {
+	                        $(span).addClass("error");
+	                    }
+	                })
+	            })
+	    }
+	
+	    //重置键盘到初始状态
+	    reset() {
+	        this._$container.find("span:not(.fixed)")
+	            .removeClass("error mark1 mark2")
+	            .addClass("empty")
+	            .text(0);
+	    }
+	
+	    //清理错误表示
+	    clear() {
+	        this._$container.find("span.error")
+	            .removeClass("error");
+	        this._$container.find("span.mark1")
+	            .removeClass("mark1");
+	        this._$container.find("span.mark2")
+	            .removeClass("mark2");
+	        
+	    }
+	
+	    //重新建立新的迷盘
+	    rebuild() {
+	        this._$container.empty();
+	        this.build();
+	        this.layout();
+	    }
 	
 	}
 	
@@ -221,6 +311,34 @@
 /* 3 */
 /***/ (function(module, exports, __webpack_require__) {
 
+	//生成数独游戏
+	
+	//1.生成完成的解决方案：generator
+	//2.随机去除部分数据，按比例
+	
+	const Generator = __webpack_require__(4);
+	
+	module.exports = class Sudoku {
+	
+	    constructor() {
+	        const generator = new Generator();
+	        generator.generate();
+	        this.solutionMatrix = generator.matrix;
+	    }
+	
+	    make(level = 5) {
+	        //const shuldRid = Math.random() * 9 < level;
+	        //生成迷盘
+	        this.puzzleMatrix = this.solutionMatrix.map(row => {
+	            return row.map(cell => Math.random() * 9 < level ? 0 : cell);
+	        });
+	    }
+	};
+
+/***/ }),
+/* 4 */
+/***/ (function(module, exports, __webpack_require__) {
+
 	//生成数独解决方案
 	
 	const Toolkit = __webpack_require__(2);
@@ -284,6 +402,70 @@
 	// const generator = new Generator();
 	// generator.generate();
 	// console.log(generator.matrix);
+
+/***/ }),
+/* 5 */
+/***/ (function(module, exports) {
+
+	//处理弹出操作面板
+	module.exports = class PopupNumbers {
+	    constructor($panel) {
+	        this._$panel = $panel.hide().removeClass("hidden");
+	
+	        $(".title").on("click", e => {
+	            this.hide();
+	        });
+	
+	        this._$panel.on("click", "span", e => {
+	            //$cell是弹出面板中的小格子
+	            const $cell = this._$targetCell;
+	            const $span = $(e.target);
+	
+	            if ($span.hasClass("mark1")) {
+	                //mark1回填样式
+	                if ($cell.hasClass("mark1")) {
+	                    $cell.removeClass("mark1");
+	                } else {
+	                    $cell.removeClass("mark2")
+	                        .addClass("mark1");
+	                }
+	            } else if ($span.hasClass("mark2")) {
+	                if ($cell.hasClass("mark2")) {
+	                    $cell.removeClass("mark2");
+	                } else {
+	                    $cell.removeClass("mark1")
+	                        .addClass("mark2");
+	                }
+	            } else if ($span.hasClass("empty")) {
+	                //empty，取消数字填写，取消mark
+	                $cell.text(0)
+	                    .addClass("empty");
+	            } else {
+	                //1-9回填数字
+	                $cell.removeClass("empty")
+	                    .text($span.text());
+	            }
+	            this.hide();
+	        });
+	    }
+	
+	    popup($cell) {
+	        //通过成员变量获取cell
+	        this._$targetCell = $cell;
+	        const { left, top } = $cell.position();
+	        this._$panel
+	            .css({
+	                left: `${left}px`,
+	                top: `${top}px`
+	            })
+	            .show();
+	    }
+	
+	    hide() {
+	        this._$panel.hide();
+	    }
+	
+	};
 
 /***/ })
 /******/ ]);
