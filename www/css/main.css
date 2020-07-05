@@ -187,3 +187,15 @@ body > * {
 .buttons button:last-child {
   border-right-width: 1px;
 }
+.count {
+  margin-bottom: 0.5rem;
+  max-width: 450px;
+}
+.count > span {
+  font-size: 15px;
+  margin-left: 1.5px;
+  margin-right: 1.5px;
+}
+.count > span:first-child {
+  margin-left: 78%;
+}

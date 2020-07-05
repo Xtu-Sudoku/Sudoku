@@ -44,15 +44,17 @@
 /* 0 */
 /***/ (function(module, exports, __webpack_require__) {
 
-	const Grid=__webpack_require__(1);
+	const Grid = __webpack_require__(1);
 	const PopupNumbers = __webpack_require__(6);
+	const Count = __webpack_require__(7);
 	
-	//九宫格的显示
 	const grid = new Grid($("#container"));
 	grid.build();
 	grid.layout();
 	
-	//创建一个popupNumbers对象，绑定弹出窗口
+	const count = new Count();
+	count.onload();
+	
 	const popupNumbers = new PopupNumbers($("#popupNumbers"));
 	grid.bindPopup(popupNumbers);
 	
@@ -77,6 +79,8 @@
 	$("#rebuild").on("click", e => {
 	    popupNumbers.hide();
 	    grid.rebuild();
+	    count.stop();
+	    count.onload();
 	});
 
 
@@ -84,51 +88,49 @@
 /* 1 */
 /***/ (function(module, exports, __webpack_require__) {
 
+	//生成九宫格
 	const Toolkit = __webpack_require__(2);
 	const Sudoku = __webpack_require__(3);
-	const Generator = __webpack_require__(4);
 	const Checker = __webpack_require__(5);
-	//九宫格生成在container中
-	//生成九宫格
-	class Grid {
+	
+	module.exports = class Grid {
 	    constructor(container) {
 	        this._$container = container;
 	    }
+	
 	    build() {
 	        const sudoku = new Sudoku();
 	        sudoku.make();
 	        const matrix = sudoku.puzzleMatrix;
 	
-	        //  	const matrix = Toolkit.matrix.makeMatrix();
-	
 	        const rowGroupClasses = ["row_g_top", "row_g_middle", "row_g_bottom"];
 	        const colGroupClasses = ["col_g_left", "col_g_center", "col_g_right"];
 	
-	        //每一行创建一个div将每一行的值new成一个span
 	        const $cells = matrix.map(rowValues => rowValues
 	            .map((cellValue, colIndex) => {
 	                return $("<span>")
 	                    .addClass(colGroupClasses[colIndex % 3])
-	                    .addClass(cellValue ? "fixed" : "empty")//迷盘添加颜色
+	                    .addClass(cellValue ? "fixed" : "empty")
 	                    .text(cellValue);
 	            }));
-	        //从cells中得到div数组
-	        const $divArray = $cells.map(($spanArray, rowIndex) => {
+	
+	        const $divArrary = $cells.map(($spanArray, rowIndex) => {
 	            return $("<div>")
 	                .addClass("row")
 	                .addClass(rowGroupClasses[rowIndex % 3])
 	                .append($spanArray);
 	        });
-	        //添加到container中
-	        this._$container.append($divArray);
+	
+	        this._$container.append($divArrary);
 	    }
+	
 	    layout() {
 	        const width = $("span:first", this._$container).width();
 	        $("span", this._$container)
 	            .height(width)
 	            .css({
 	                "line-height": `${width}px`,
-	                "font-size": width < 32 ? `${width / 2}` : ""
+	                "font-size": width < 32 ? `${width / 2}px` : ""
 	            });
 	    }
 	
@@ -203,111 +205,93 @@
 	        this.layout();
 	    }
 	
+	    
+	
 	};
-	
-	const generator = new Generator();
-	generator.generate();
-	// 		console.log(generator.matrix);
-	
-	const matrix = generator.matrix;
-	console.log("matrix\n", matrix);
-	
-	
-	//new Grid($("#container")).build();
-	
-	module.exports = Grid;
-
 
 /***/ }),
 /* 2 */
 /***/ (function(module, exports) {
 
-	//矩阵和数组 工具
-	
+	//矩阵和数组工具
 	const matrixToolkit = {
-	    makeRow(v=0){
+	
+	    makeRow(v = 0) {
 	        const array = new Array(9);
 	        array.fill(v);
 	        return array;
 	    },
-	    
-	    makeMatrix(v=0) {
-	        return Array.from({length:9},() => this.makeRow(v));//在此 是不能和前面一样的
-	        
+	
+	    makeMatrix(v = 0) {
+	        return Array.from({ length: 9 }, () => this.makeRow(v))
 	    },
-	    
-	    //测试
-	    // const a=makeMatrix();
-	    // a[0][1]=2;
-	    // console.log(a);
-	    
-	    // Fisher-Yates 洗牌算法
-	    shuffle(array) { 
-	        const length = array.length;
-	        const endIndex = length -1;
-	        for(let i=0;i<endIndex;i++){
-	            const j = i + Math.floor(Math.random() * (length - i));
-	            [array[i],array[j]] = [array[j],array[i]];
+	
+	    shuffle(array) {
+	        const endIndex = array.length - 2;
+	        for (let i = 0; i <= endIndex; i++) {
+	            const j = (i + Math.floor(Math.random() * (array.length - i)));
+	            [array[i], array[j]] = [array[j], array[i]];
 	        }
 	        return array;
-	    }, 
-	    
-	    //检查指定位置是否能够填写数字n
-	    checkFillable(matrix,n,rowIndex,colIndex){
+	    },
+	
+	    //检查指定位置可以填写
+	    checkFillable(matrix, n, rowIndex, colIndex) {
 	        const row = matrix[rowIndex];
-	        const column = this.makeRow().map((v,i) =>matrix[i][colIndex]);
-	        const {boxIndex} = boxToolkit.convertToBoxIndex(rowIndex,colIndex);
-	        //宫
-	        const box =boxToolkit.getBoxCells(matrix,boxIndex);
-	        for(let i = 0;i < 9; i++){
-	            if(row[i] === n || column[i] === n || box[i] === n)
+	        const column = this.makeRow().map((v, i) => matrix[i][colIndex]);
+	        const { boxIndex } = boxToolkit.convertToBoxIndex(rowIndex, colIndex);
+	        const box = boxToolkit.getBoxcells(matrix, boxIndex);
+	        for (let i = 0; i < 9; i++) {
+	            if (row[i] === n || column[i] === n || box[i] === n) {
 	                return false;
+	            }
 	        }
 	        return true;
 	    }
-	};
+	}
 	
-	//坐标系工具——坐标转换
+	//宫坐标系工具
 	const boxToolkit = {
-	    getBoxCells(matrix,boxIndex){//格子的位置
+	
+	    getBoxcells(matrix, boxIndex) {
 	        const startRowIndex = Math.floor(boxIndex / 3) * 3;
 	        const startColIndex = boxIndex % 3 * 3;
 	        const result = [];
-	        for(let cellIndex = 0;cellIndex < 9; cellIndex++){
+	        for (let cellIndex = 0; cellIndex < 9; cellIndex++) {
 	            const rowIndex = startRowIndex + Math.floor(cellIndex / 3);
 	            const colIndex = startColIndex + cellIndex % 3;
 	            result.push(matrix[rowIndex][colIndex]);
 	        }
 	        return result;
 	    },
-	    convertToBoxIndex(rowIndex,colIndex){//宫格的位置
-	        return{
+	
+	    convertToBoxIndex(rowIndex, colIndex) {
+	        return {
 	            boxIndex: Math.floor(rowIndex / 3) * 3 + Math.floor(colIndex / 3),
 	            cellIndex: rowIndex % 3 * 3 + colIndex % 3
 	        };
 	    },
 	
-	    convertFromBoxIndex(boxIndex,cellIndex){//宫格内格子的位置
-	        return{
+	    convertFromBoxIndex(boxIndex, cellIndex) {
+	        return {
 	            rowIndex: Math.floor(boxIndex / 3) * 3 + Math.floor(cellIndex / 3),
-	            colIndex:boxIndex % 3 * 3 + cellIndex % 3
+	            colIndex: boxIndex % 3 * 3 + cellIndex % 3
 	        };
 	    }
+	
 	};
 	
-	
-	//工具集，用来输出
-	module.exports = class Toolkit{
-	    // 矩阵和数组相关的工具
-	    static get matrix(){
+	//工具集
+	module.exports = class Toolkit {
+	    //矩阵和数组相关的工具
+	    static get matrix() {
 	        return matrixToolkit;
 	    }
-	    
-	    //坐标系工具
-	    static get box(){
+	
+	    //宫坐标系相关的工具
+	    static get box() {
 	        return boxToolkit;
 	    }
-	    
 	};
 
 /***/ }),
@@ -342,116 +326,114 @@
 /* 4 */
 /***/ (function(module, exports, __webpack_require__) {
 
-	//生成数独解决方案
-	
+	//生成数组解决方案脚本
 	const Toolkit = __webpack_require__(2);
+	const { matrix } = __webpack_require__(2);
 	
-	module.exports = class Generator{//要导出
-	//class Generator{
-	    generate(){
-	        while(!this.internalGenerate()){
-	            console.warn("try again");
+	module.exports = class Generator {
+	
+	    generate() {
+	        while (!this.internalgenerate()) {
+	            console.warn("try again!");
 	        }
 	    }
-	    internalGenerate(){
-	        // 入口方法
+	
+	    internalgenerate() {
 	        this.matrix = Toolkit.matrix.makeMatrix();
 	        this.orders = Toolkit.matrix.makeMatrix()
-	            .map(row => row.map((v,i)=> i))//每一行，0-8，随机序列
-	            .map(row => Toolkit.matrix.shuffle(row));//洗牌方法，打乱，随机选择
-	            
-	            for (let n=1;n<=9;n++){
-	            	if(!this.fillNumber(n)){
-	               		return false;
-	            	}
-	        	}
+	            .map(row => row.map((v, i) => i))
+	            .map(row => Toolkit.matrix.shuffle(row));
+	
+	        for (let n = 1; n <= 9; n++) {
+	            if (!this.fillNumber(n)) {
+	                return false;
+	            }
+	        }
 	        return true;
 	    }
 	
-	    fillNumber(n){//填充行
-	        return this.fillRow(n,0);
+	    fillNumber(n) {
+	        return this.fillRow(n, 0);
 	    }
-	    //递归
-	    fillRow(n,rowIndex){
-	        if(rowIndex > 8){//结束
+	
+	    fillRow(n, rowIndex) {
+	        if (rowIndex > 8) {
 	            return true;
 	        }
-	        //行数据
+	
 	        const row = this.matrix[rowIndex];
-	        //选择填写位置
 	        const orders = this.orders[rowIndex];
-	        for(let i = 0 ;i<9; i++){ 
-		        const colIndex =orders[i];//固定
-	            //判断数据 如果此位置已有值，跳过
-	            if(row[colIndex]){
+	        for (let i = 0; i < 9; i++) {
+	            const colIndex = orders[i];
+	            //已经填写值
+	            if (row[colIndex]) {
 	                continue;
 	            }
-	            //检查此位置是否能填
-	            if(!Toolkit.matrix.checkFillable(this.matrix,n,rowIndex,colIndex)){
+	            //检查这个位置是否可以填写 n
+	            if (!Toolkit.matrix.checkFillable(this.matrix, n, rowIndex, colIndex)) {
 	                continue;
 	            }
 	            row[colIndex] = n;
-	            //去下一行填写n 如果填写失败则继续寻找当前行下一个位置
-	            if(!this.fillRow(n,rowIndex + 1)){
+	            //在下一行填写 n ，如果没有填写进去，就继续当前行的下一个位置
+	            if (!this.fillRow(n, rowIndex + 1)) {
 	                row[colIndex] = 0;
 	                continue;
 	            }
+	
 	            return true;
 	        }
 	        return false;
 	    }
-	}
-	
-	// const generator = new Generator();
-	// generator.generate();
-	// console.log(generator.matrix);
+	};
 
 /***/ }),
 /* 5 */
 /***/ (function(module, exports, __webpack_require__) {
 
-	//检查数独解决方案
-	
-	function checkArray(array){
+	//检查数独的解决方案
+	function checkArray(array) {
 	    const length = array.length;
-	    //定义标记
-	    const marks = new Array(length);
+	    const marks = new Array(length)
 	    marks.fill(true);
-	    for (let i=0;i < length-1;i++){
-	        if(!marks[i]){//先判断
+	
+	    for (let i = 0; i < length - 1; i++) {
+	        //如果已经标记过则跳过
+	        if (!marks[i]) {
 	            continue;
 	        }
+	
 	        const v = array[i];
-	        //是否有效，0表示无效，1-9 有效
-	        if(!v){
+	        //是否有效，0 -> 无效，1-9 -> 有效
+	        if (!v) {
 	            marks[i] = false;
 	            continue;
 	        }
-	        //是否有重复 i+1=>9 是否有与位置i重复的数据
-	        for( let j=i+1;j<length;j++){
-	            if(v===array[j]){
+	        //是否有重复，i + 1 - 9 是否和 i 的位置有重复
+	        for (let j = i + 1; j < length; j++) {
+	            if (v === array[j]) {
 	                marks[i] = marks[j] = false;
 	            }
 	        }
 	    }
+	
 	    return marks;
 	}
-	      console.log(checkArray([1,2,3,4,5,6,7,8,9]));
-	      console.log(checkArray([1,2,3,4,0,6,7,8,9]));
-	      console.log(checkArray([1,2,3,4,6,7,7,9,2]));
 	
 	
-	//输入：matrix 用户完成的数独数据，9*9
-	//处理：对matrix 行、列、宫进行检查，并填写marks
-	//输出：检查是否成功、marks
 	const Toolkit = __webpack_require__(2);
-	module.exports = class Checker{
-	    constructor(matrix){
+	const { box } = __webpack_require__(2);
+	
+	//输入 matrix，用户完成的数独数据 9 * 9
+	//处理：对 matrix 行、列、宫进行检查，并填写 marks
+	//输出：检查是否成功、marks
+	module.exports = class Checker {
+	
+	    constructor(matrix) {
 	        this._matrix = matrix;
 	        this._matrixMarks = Toolkit.matrix.makeMatrix(true);
 	    }
 	
-	    get matrixMarks(){
+	    get matrixMarks() {
 	        return this._matrixMarks;
 	    }
 	
@@ -459,87 +441,78 @@
 	        return this._success;
 	    }
 	
-	    check(){
+	    check() {
 	        this.checkRows();
 	        this.checkCols();
 	        this.checkBoxes();
+	
 	        //检查是否成功
 	        //Array.prototype.every()
-	        this._success = this._matrixMarks.every(row => row.every(mark => mark))
+	        this._success = this._matrixMarks.every(row => row.every(mark => mark));
 	        return this._success;
 	    }
-	    checkRows(){//检查行
-	        for(let rowIndex=0;rowIndex < 9;rowIndex++){
+	
+	    checkRows() {
+	        for (let rowIndex = 0; rowIndex < 9; rowIndex++) {
 	            const row = this._matrix[rowIndex];
 	            const marks = checkArray(row);
-	            for(let colIndex=0;colIndex < marks.length;colIndex++){
-	                if(!marks[colIndex]){
-	                    this._matrixMarks[rowIndex][colIndex] =false;
-	                }
-	            }
-	        }
-	    }
-	    checkCols(){//检查列
-	        for(let colIndex=0;colIndex < 9;colIndex++){
-	            const cols = [];
-	            for(let rowIndex=0;rowIndex < 9;rowIndex++){
-	                cols[rowIndex]= this._matrix[rowIndex][colIndex];
-	            }
-	            const marks = checkArray(cols);
-	            for(let rowIndex=0;rowIndex < marks.length;rowIndex++){
-	                if(!marks[rowIndex]){
+	
+	            for (let colIndex = 0; colIndex < marks.length; colIndex++) {
+	                if (!marks[colIndex]) {
 	                    this._matrixMarks[rowIndex][colIndex] = false;
 	                }
 	            }
 	        }
 	    }
-	    checkBoxes(){//检查宫格
-	        for(let boxIndex=0;boxIndex < 9;boxIndex++){
-	            const boxes = Toolkit.box.getBoxCells(this._matrix,boxIndex);
+	
+	    checkCols() {
+	        for (let colIndex = 0; colIndex < 9; colIndex++) {
+	            const cols = [];
+	            for (let rowIndex = 0; rowIndex < 9; rowIndex++) {
+	                cols[rowIndex] = this._matrix[rowIndex][colIndex];
+	            }
+	
+	            const marks = checkArray(cols);
+	            for (let rowIndex = 0; rowIndex < marks.length; rowIndex++) {
+	                if (!marks[rowIndex]) {
+	                    this._matrixMarks[rowIndex][colIndex] = false;
+	                }
+	            }
+	        }
+	    }
+	
+	    checkBoxes() {
+	        for (let boxIndex = 0; boxIndex < 9; boxIndex++) {
+	            const boxes = Toolkit.box.getBoxcells(this._matrix, boxIndex);
 	            const marks = checkArray(boxes);
-	            for(let cellIndex=0;cellIndex < 9;cellIndex++){
-	                if(!marks[cellIndex]){
-	                    const {rowIndex,colIndex}= Toolkit.box.convertFromBoxIndex(boxIndex,cellIndex);
-	                    this.matrixMarks[rowIndex][colIndex] =false;
+	            for (let cellIndex = 0; cellIndex < 9; cellIndex++) {
+	                if (!marks[cellIndex]) {
+	                    const { rowIndex, colIndex } = Toolkit.box.convertFromBoxIndex(boxIndex, cellIndex);
+	                    this._matrixMarks[rowIndex][colIndex] = false;
 	                }
 	            }
 	        }
 	    }
 	}
-	//测试
-	//const Generator = require("./generator");
-	//const Checker = require("./checker");
-	//
-	//const gen = new Generator();
-	//gen.generate();
-	//const matrix = gen.matrix;
-	//
-	//const checker = new Checker(matrix);
-	//console.log("check:",checker.check());
-	//console.log(checker.matrixMarks);
-	//
-	//matrix[1][1] = 0;
-	//matrix[2][3] = matrix[3][5] = 6;
-	//
-	//const checker2 = new Checker(matrix);
-	//console.log("check:",checker2.check());
-	//console.log(checker2.matrixMarks);
 
 /***/ }),
 /* 6 */
 /***/ (function(module, exports) {
 
-	//处理弹出操作面板
+	//处理弹出的操作面板
+	//cell -- (click) --> popup
+	//popup -- (click) --> n --> (fill) -->cell
+	
+	
 	module.exports = class PopupNumbers {
 	    constructor($panel) {
 	        this._$panel = $panel.hide().removeClass("hidden");
 	
-	        $(".title").on("click", e => {
+	        $(".title").on("click",e=>{
 	            this.hide();
 	        });
 	
 	        this._$panel.on("click", "span", e => {
-	            //$cell是弹出面板中的小格子
 	            const $cell = this._$targetCell;
 	            const $span = $(e.target);
 	
@@ -572,7 +545,6 @@
 	    }
 	
 	    popup($cell) {
-	        //通过成员变量获取cell
 	        this._$targetCell = $cell;
 	        const { left, top } = $cell.position();
 	        this._$panel
@@ -586,7 +558,50 @@
 	    hide() {
 	        this._$panel.hide();
 	    }
+	};
+
+/***/ }),
+/* 7 */
+/***/ (function(module, exports) {
+
 	
+	var ctimer = null;
+	var num = 0;
+	
+	module.exports = class Count {
+	
+	    onload() {
+	        if (ctimer) {
+	            clearInterval(ctimer);
+	            ctimer = null;
+	            num = 0;
+	        }
+	        ctimer = setInterval(() => {
+	            num++;
+	            console.log(num);
+	            // $("#id")是jQuery对象，没有innerHTML属性,innerHTML是原生属性，加上$("#id")[0]转换成原生属性
+	            $("#count_s")[0].innerHTML = this.show_num(num % 60);
+	            $("#count_m")[0].innerHTML = this.show_num(parseInt(Math.floor(num / 60) % 60));
+	            $("#count_h")[0].innerHTML = this.show_num(parseInt(Math.floor(num / 60) / 60));
+	        }, 1000)
+	    }
+	
+	    stop() {
+	        console.log("Innerstopnum", ctimer);
+	        clearInterval(ctimer);
+	        ctimer = null;
+	        num = 0;
+	        $("#count_s")[0].innerHTML = "00";
+	        $("#count_m")[0].innerHTML = "00";
+	        $("#count_h")[0].innerHTML = "00";
+	    }
+	
+	    show_num(n) {
+	        if (n < 10) {
+	            return '0' + n;
+	        }
+	        return n;
+	    }
 	};
 
 /***/ })

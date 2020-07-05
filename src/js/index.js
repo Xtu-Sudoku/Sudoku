@@ -1,12 +1,14 @@
-const Grid=require("./ui/grid");
-const PopupNumbers = require('./ui/popupnumbers');
+const Grid = require("./ui/grid");
+const PopupNumbers = require("./ui/popupnumbers");
+const Count = require("./core/count");
 
-//九宫格的显示
 const grid = new Grid($("#container"));
 grid.build();
 grid.layout();
 
-//创建一个popupNumbers对象，绑定弹出窗口
+const count = new Count();
+count.onload();
+
 const popupNumbers = new PopupNumbers($("#popupNumbers"));
 grid.bindPopup(popupNumbers);
 
@@ -31,4 +33,6 @@ $("#clear").on("click", e => {
 $("#rebuild").on("click", e => {
     popupNumbers.hide();
     grid.rebuild();
+    count.stop();
+    count.onload();
 });
