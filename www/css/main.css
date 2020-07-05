@@ -68,10 +68,69 @@ body > * {
   border-bottom-width: 2px;
 }
 .container .row > span.fixed {
+  /*迷盘数字背景调颜色*/
   background: #eeeeee;
 }
 .container .row > span.empty {
+  /*隐藏数字颜色调成背景色*/
   color: white;
+}
+/*弹框*/
+.popup-num {
+  padding-left: 5%;
+  position: absolute;
+  padding: 0px;
+}
+.popup-num .row > span {
+  display: inline-block;
+  cursor: pointer;
+  text-align: center;
+  width: 10%;
+  height: 24px;
+  line-height: 24px;
+  font-family: "微软雅黑";
+  border: 1px solid #cccccc;
+  border-right-width: 0;
+  border-bottom-width: 0;
+  background: white;
+}
+.popup-num .row > span {
+  width: 40px;
+  height: 40px;
+  line-height: 40px;
+}
+.popup-num .row > span.col_g_right {
+  border-right-width: 1px;
+}
+.popup-num .row > span:first-child {
+  /*左边界*/
+  border-left-width: 2px;
+}
+.popup-num .row > span:last-child {
+  /*右边界*/
+  border-right-width: 2px;
+}
+.popup-num .row.row_g_bottom > span {
+  border-bottom-width: 1px;
+}
+.popup-num .row:first-child > span {
+  /*上边界*/
+  border-top-width: 2px;
+}
+.popup-num .row:last-child > span {
+  /*下边界*/
+  border-bottom-width: 2px;
+}
+.popup-num .row > span.empty {
+  color: white;
+}
+.popup-num .row > span.mark1 {
+  /*左边小格子颜色*/
+  background: #a7cfe2;
+}
+.popup-num .row > span.mark2 {
+  /*右边小格子颜色*/
+  background: #c8e3a6;
 }
 /*按钮*/
 .dashboard {

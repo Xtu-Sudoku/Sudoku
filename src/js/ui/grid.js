@@ -1,5 +1,4 @@
 const Toolkit = require("../core/toolkit");
-const Sudoku = require("../core/sudoku");
 const Generator = require("../core/generator");
 //九宫格生成在container中
 //生成九宫格
@@ -8,12 +7,11 @@ class Grid {
         this._$container = container;
     }
     build() {
-        const sudoku = new Sudoku();
+
+		const sudoku = new Sudoku();
         sudoku.make();
         const matrix = sudoku.puzzleMatrix;
-
-        //  	const matrix = Toolkit.matrix.makeMatrix();
-
+		
         const rowGroupClasses = ["row_g_top", "row_g_middle", "row_g_bottom"];
         const colGroupClasses = ["col_g_left", "col_g_center", "col_g_right"];
 
