@@ -59,7 +59,7 @@
 /***/ (function(module, exports, __webpack_require__) {
 
 	const Toolkit = __webpack_require__(2);
-	
+	const Generator = __webpack_require__(3);
 	//九宫格生成在container中
 	//生成九宫格
 	class Grid{
@@ -67,7 +67,11 @@
 	        this._$container = container;
 	    }
 	    build(){
-	    	const matrix = Toolkit.matrix.makeMatrix();
+	   		const generator = new Generator();
+	   		generator.generate();
+	   		
+	    	const matrix = generator.matrix;
+	//  	const matrix = Toolkit.matrix.makeMatrix();
 	    	
 	        const rowGroupClasses = ["row_g_top","row_g_middle","row_g_bottom"];
 	        const colGroupClasses = ["col_g_left","col_g_center","col_g_right"];
@@ -102,6 +106,14 @@
 	    
 	}
 	
+			const generator = new Generator();
+	   		generator.generate();
+	// 		console.log(generator.matrix);
+	   		
+	    	const matrix = generator.matrix;
+			console.log("matrix\n",matrix);
+			
+			
 	//new Grid($("#container")).build();
 	
 	module.exports = Grid;
@@ -198,6 +210,74 @@
 	    }
 	    
 	};
+
+/***/ }),
+/* 3 */
+/***/ (function(module, exports, __webpack_require__) {
+
+	//生成数独解决方案
+	
+	const Toolkit = __webpack_require__(2);
+	
+	module.exports = class Generator{//要导出
+	//class Generator{
+	    generate(){
+	        while(!this.internalGenerate()){
+	            console.warn("try again");
+	        }
+	    }
+	    internalGenerate(){
+	        // 入口方法
+	        this.matrix = Toolkit.matrix.makeMatrix();
+	        this.orders = Toolkit.matrix.makeMatrix()
+	            .map(row => row.map((v,i)=> i))//每一行，0-8，随机序列
+	            .map(row => Toolkit.matrix.shuffle(row));//洗牌方法，打乱，随机选择
+	            
+	            for (let n=1;n<=9;n++){
+	            	if(!this.fillNumber(n)){
+	               		return false;
+	            	}
+	        	}
+	        return true;
+	    }
+	
+	    fillNumber(n){//填充行
+	        return this.fillRow(n,0);
+	    }
+	    //递归
+	    fillRow(n,rowIndex){
+	        if(rowIndex > 8){//结束
+	            return true;
+	        }
+	        //行数据
+	        const row = this.matrix[rowIndex];
+	        //选择填写位置
+	        const orders = this.orders[rowIndex];
+	        for(let i = 0 ;i<9; i++){ 
+		        const colIndex =orders[i];//固定
+	            //判断数据 如果此位置已有值，跳过
+	            if(row[colIndex]){
+	                continue;
+	            }
+	            //检查此位置是否能填
+	            if(!Toolkit.matrix.checkFillable(this.matrix,n,rowIndex,colIndex)){
+	                continue;
+	            }
+	            row[colIndex] = n;
+	            //去下一行填写n 如果填写失败则继续寻找当前行下一个位置
+	            if(!this.fillRow(n,rowIndex + 1)){
+	                row[colIndex] = 0;
+	                continue;
+	            }
+	            return true;
+	        }
+	        return false;
+	    }
+	}
+	
+	// const generator = new Generator();
+	// generator.generate();
+	// console.log(generator.matrix);
 
 /***/ })
 /******/ ]);

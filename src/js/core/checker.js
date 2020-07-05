@@ -95,20 +95,20 @@ module.exports = class Checker{
     }
 }
 //测试
-const Generator = require("./generator");
-const Checker = require("./checker");
-
-const gen = new Generator();
-gen.generate();
-const matrix = gen.matrix;
-
-const checker = new Checker(matrix);
-console.log("check:",checker.check());
-console.log(checker.matrixMarks);
-
-matrix[1][1] = 0;
-matrix[2][3] = matrix[3][5] = 6;
-
-const checker2 = new Checker(matrix);
-console.log("check:",checker2.check());
-console.log(checker2.matrixMarks);
+//const Generator = require("./generator");
+//const Checker = require("./checker");
+//
+//const gen = new Generator();
+//gen.generate();
+//const matrix = gen.matrix;
+//
+//const checker = new Checker(matrix);
+//console.log("check:",checker.check());
+//console.log(checker.matrixMarks);
+//
+//matrix[1][1] = 0;
+//matrix[2][3] = matrix[3][5] = 6;
+//
+//const checker2 = new Checker(matrix);
+//console.log("check:",checker2.check());
+//console.log(checker2.matrixMarks);

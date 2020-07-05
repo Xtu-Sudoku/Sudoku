@@ -1,5 +1,5 @@
 const Toolkit = require("../core/toolkit");
-
+const Generator = require("../core/generator");
 //九宫格生成在container中
 //生成九宫格
 class Grid{
@@ -7,7 +7,11 @@ class Grid{
         this._$container = container;
     }
     build(){
-    	const matrix = Toolkit.matrix.makeMatrix();
+   		const generator = new Generator();
+   		generator.generate();
+   		
+    	const matrix = generator.matrix;
+//  	const matrix = Toolkit.matrix.makeMatrix();
     	
         const rowGroupClasses = ["row_g_top","row_g_middle","row_g_bottom"];
         const colGroupClasses = ["col_g_left","col_g_center","col_g_right"];
@@ -42,6 +46,14 @@ class Grid{
     
 }
 
+		const generator = new Generator();
+   		generator.generate();
+// 		console.log(generator.matrix);
+   		
+    	const matrix = generator.matrix;
+		console.log("matrix\n",matrix);
+		
+		
 //new Grid($("#container")).build();
 
 module.exports = Grid;
