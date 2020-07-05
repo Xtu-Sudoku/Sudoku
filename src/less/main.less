@@ -80,6 +80,12 @@ body > * {
  .container .row > span.mark2 {//修改底色 右边
    background: rgb(200,227,166);
  }
+ .container .row > span.error {//<---
+    background: red;
+    &.empty{
+      color: red;
+    }
+}
 
 /*弹框*/
 .popup-num {

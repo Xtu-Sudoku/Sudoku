@@ -45,7 +45,7 @@
 /***/ (function(module, exports, __webpack_require__) {
 
 	const Grid=__webpack_require__(1);
-	const PopupNumbers = __webpack_require__(5);
+	const PopupNumbers = __webpack_require__(6);
 	
 	//九宫格的显示
 	const grid = new Grid($("#container"));
@@ -55,6 +55,29 @@
 	//创建一个popupNumbers对象，绑定弹出窗口
 	const popupNumbers = new PopupNumbers($("#popupNumbers"));
 	grid.bindPopup(popupNumbers);
+	
+	
+	$("#check").on("click", e => {
+	    popupNumbers.hide();
+	    if (grid.check()) {
+	        alert("Congruations!");
+	    }
+	});
+	
+	$("#reset").on("click", e => {
+	    popupNumbers.hide();
+	    grid.reset();
+	});
+	
+	$("#clear").on("click", e => {
+	    popupNumbers.hide();
+	    grid.clear();
+	});
+	
+	$("#rebuild").on("click", e => {
+	    popupNumbers.hide();
+	    grid.rebuild();
+	});
 
 
 /***/ }),
@@ -64,6 +87,7 @@
 	const Toolkit = __webpack_require__(2);
 	const Sudoku = __webpack_require__(3);
 	const Generator = __webpack_require__(4);
+	const Checker = __webpack_require__(5);
 	//九宫格生成在container中
 	//生成九宫格
 	class Grid {
@@ -113,8 +137,72 @@
 	        //因为九宫格是动态生成的，所以使用事件代理方式来实现，this是个grid对象
 	        this._$container.on("click", "span", e => {
 	            const $cell = $(e.target);
+	            if ($cell.is(".fixed")) {
+	                return;
+	            }
 	            popupNumbers.popup($cell);
 	        });
+	    }
+	
+	    //检查用户的结果，错误则进行标记
+	    check() {
+	        //获取需要检查的数据
+	        const $rows = this._$container.children();
+	        const data = $rows
+	            .map((rowIndex, div) => {
+	                return $(div).children()
+	                    .map((colIndex, span) => parseInt($(span).text()) || 0);
+	            })
+	            .toArray()
+	            .map($data => $data.toArray());
+	
+	        console.log(data);
+	
+	        const checker = new Checker(data);
+	        //检查成功
+	        if (checker.check()) {
+	            return true;
+	        }
+	
+	        //检查不成功
+	        const marks = checker.matrixMarks;
+	        this._$container.children()
+	            .each((rowIndex, div) => {
+	                $(div).children().each((colIndex, span) => {
+	                    const $span = $(span);
+	                    if ($span.is(".fixed") || marks[rowIndex][colIndex]) {
+	                        $span.removeClass("error");
+	                    } else {
+	                        $(span).addClass("error");
+	                    }
+	                })
+	            })
+	    }
+	
+	    //重置键盘到初始状态
+	    reset() {
+	        this._$container.find("span:not(.fixed)")
+	            .removeClass("error mark1 mark2")
+	            .addClass("empty")
+	            .text(0);
+	    }
+	
+	    //清理错误表示
+	    clear() {
+	        this._$container.find("span.error")
+	            .removeClass("error");
+	        this._$container.find("span.mark1")
+	            .removeClass("mark1");
+	        this._$container.find("span.mark2")
+	            .removeClass("mark2");
+	        
+	    }
+	
+	    //重新建立新的迷盘
+	    rebuild() {
+	        this._$container.empty();
+	        this.build();
+	        this.layout();
 	    }
 	
 	}
@@ -322,6 +410,125 @@
 
 /***/ }),
 /* 5 */
+/***/ (function(module, exports, __webpack_require__) {
+
+	//检查数独解决方案
+	
+	function checkArray(array){
+	    const length = array.length;
+	    //定义标记
+	    const marks = new Array(length);
+	    marks.fill(true);
+	    for (let i=0;i < length-1;i++){
+	        if(!marks[i]){//先判断
+	            continue;
+	        }
+	        const v = array[i];
+	        //是否有效，0表示无效，1-9 有效
+	        if(!v){
+	            marks[i] = false;
+	            continue;
+	        }
+	        //是否有重复 i+1=>9 是否有与位置i重复的数据
+	        for( let j=i+1;j<length;j++){
+	            if(v===array[j]){
+	                marks[i] = marks[j] = false;
+	            }
+	        }
+	    }
+	    return marks;
+	}
+	      console.log(checkArray([1,2,3,4,5,6,7,8,9]));
+	      console.log(checkArray([1,2,3,4,0,6,7,8,9]));
+	      console.log(checkArray([1,2,3,4,6,7,7,9,2]));
+	
+	
+	//输入：matrix 用户完成的数独数据，9*9
+	//处理：对matrix 行、列、宫进行检查，并填写marks
+	//输出：检查是否成功、marks
+	const Toolkit = __webpack_require__(2);
+	module.exports = class Checker{
+	    constructor(matrix){
+	        this._matrix = matrix;
+	        this._matrixMarks = Toolkit.matrix.makeMatrix(true);
+	    }
+	
+	    get matrixMarks(){
+	        return this._matrixMarks;
+	    }
+	
+	    get isSuccess(){
+	        return this._success;
+	    }
+	
+	    check(){
+	        this.checkRows();
+	        this.checkCols();
+	        this.checkBoxes();
+	        //检查是否成功
+	        //Array.prototype.every()
+	        this._success = this._matrixMarks.every(row => row.every(mark => mark))
+	        return this._success;
+	    }
+	    checkRows(){//检查行
+	        for(let rowIndex=0;rowIndex < 9;rowIndex++){
+	            const row = this._matrix[rowIndex];
+	            const marks = checkArray(row);
+	            for(let colIndex=0;colIndex < marks.length;colIndex++){
+	                if(!marks[colIndex]){
+	                    this._matrixMarks[rowIndex][colIndex] =false;
+	                }
+	            }
+	        }
+	    }
+	    checkCols(){//检查列
+	        for(let colIndex=0;colIndex < 9;colIndex++){
+	            const cols = [];
+	            for(let rowIndex=0;rowIndex < 9;rowIndex++){
+	                cols[rowIndex]= this._matrix[rowIndex][colIndex];
+	            }
+	            const marks = checkArray(cols);
+	            for(let rowIndex=0;rowIndex < marks.length;rowIndex++){
+	                if(!marks[rowIndex]){
+	                    this._matrixMarks[rowIndex][colIndex] = false;
+	                }
+	            }
+	        }
+	    }
+	    checkBoxes(){//检查宫格
+	        for(let boxIndex=0;boxIndex < 9;boxIndex++){
+	            const boxes = Toolkit.box.getBoxCells(this._matrix,boxIndex);
+	            const marks = checkArray(boxes);
+	            for(let cellIndex=0;cellIndex < 9;cellIndex++){
+	                if(!marks[cellIndex]){
+	                    const {rowIndex,colIndex}= Toolkit.box.convertFromBoxIndex(boxIndex,cellIndex);
+	                    this.matrixMarks[rowIndex][colIndex] =false;
+	                }
+	            }
+	        }
+	    }
+	};
+	//测试
+	//const Generator = require("./generator");
+	//const Checker = require("./checker");
+	//
+	//const gen = new Generator();
+	//gen.generate();
+	//const matrix = gen.matrix;
+	//
+	//const checker = new Checker(matrix);
+	//console.log("check:",checker.check());
+	//console.log(checker.matrixMarks);
+	//
+	//matrix[1][1] = 0;
+	//matrix[2][3] = matrix[3][5] = 6;
+	//
+	//const checker2 = new Checker(matrix);
+	//console.log("check:",checker2.check());
+	//console.log(checker2.matrixMarks);
+
+/***/ }),
+/* 6 */
 /***/ (function(module, exports) {
 
 	//处理弹出操作面板
