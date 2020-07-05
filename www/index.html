@@ -6,6 +6,25 @@
     <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no"/>
     <title>经典数独</title>
     <link rel="stylesheet" type="text/css" href="css/main.css" />
+    
+    <style>
+        /*测试*/
+    </style>
+    <!--弹窗-->
+    <script src="http://libs.baidu.com/jquery/1.10.2/jquery.min.js"></script>
+    <script>
+        $(function () {
+            $(".Rank_btn").click(function () {
+                $(".Rank_Content_Main").fadeIn();
+            });
+            $(".Close_btn").click(function () {
+                $(".Rank_Content_Main").fadeOut();
+            })
+            
+        });
+    </script>
+    
+    
 </head>
 
 <body>
@@ -17,24 +36,33 @@
     <!-- 计时器 -->
     <div class="count">
         <span id="count_h">00</span>:<span id="count_m">00</span>:<span id="count_s">00</span>
+        
+        <div class="Rank_btn">排行榜</div>
     </div>
 
     <!-- 九宫格 -->
     <div id="container" class="container grid"></div>
 
-    <!-- 排行榜 -->
-    <div class="rank">
-        <div>
-            <button type="button" id="ranking">Ranking List</button>
-        </div>
-        <div class="panel">
-            <table id="tab">
-                    <tr class="tbd">
-                        <td>username</td>
-                        <td>checktime</td>
-                        <td>score</td>
-                        <td>time</td>
-                    </tr>
+    <!--排行榜内容-->
+    <div class="Rank_Content_Main">
+        <div class="Rank_Content">
+            <div class="Close_btn">点击关闭</div>
+            <!--关闭-->
+
+            <table id="tab" cellpadding="10" cellspacing="15" frame="box">
+                <!--单元格调整-->
+                <tr>
+                    <td><b>排行榜</b></td>
+                </tr>
+
+                <tr class="tr">
+                    <!--一行-->
+                    <!--四列-->
+                    <td>用户名</td>
+                    <td>检查次数</td>
+                    <td>得分</td>
+                    <td>所用时间</td>
+                </tr>
             </table>
         </div>
     </div>

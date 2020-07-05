@@ -16,7 +16,7 @@ body > * {
   padding: 1rem 5%;
   background: steelblue;
   color: white;
-  margin-bottom: 2rem;
+  margin-bottom: 2rem;/*用rem,不会变化 而px会变化*/
   box-shadow: 0 0.2rem 0.3rem #303030;
 }
 .title h1 {
@@ -75,19 +75,23 @@ body > * {
   /*隐藏数字颜色调成背景色*/
   color: white;
 }
-.container .row > span.error {/*检测错误,标色*/
+.container .row > span.error {
+  /*检测错误,标色*/
   background: lightpink;
 }
 .container .row > span.error.empty {
   color: lightpink;
 }
-.container .row > span.mark1 {/*修改底色  左边小格子颜色*/
+.container .row > span.mark1 {
+  /*修改底色  左边小格子颜色*/
   background: #a7cfe2;
 }
-.container .row > span.mark1.empty {/*修改背景色*/
+.container .row > span.mark1.empty {
+  /*修改背景色*/
   color: #a7cfe2;
 }
-.container .row > span.mark2 {/*修改底色  右边小格子颜色*/
+.container .row > span.mark2 {
+  /*修改底色  右边小格子颜色*/
   background: #c8e3a6;
 }
 .container .row > span.mark2.empty {
@@ -183,16 +187,64 @@ body > * {
 .buttons button:last-child {
   border-right-width: 1px;
 }
-
-.count{
+/*计时器*/
+.count {
   margin-bottom: 0.5rem;
-    max-width: 450px;
-    >span{
-        &:first-child{
-            margin-left: 78%;
-        }
-        font-size: 15px;
-        margin-left: 1.5px;
-        margin-right: 1.5px;
-    }
+  max-width: 450px;
+  line-height: 25px;
+}
+.count > span {
+  font-size: 15px;
+  margin-left: 1.5px;
+  margin-right: 1.5px;
+}
+.count > span:first-child {
+  margin-left: 76%;
+}
+/*排行榜*/
+.Rank_Content_Main {
+  width: 450px;
+  height: 80%;
+  background-color: rgba(0, 0, 0, 0.8);
+  display: none;
+  position: absolute;
+  top: 9%;
+}
+.Rank_Content {
+  max-width: 450px;
+  margin: 0 auto;
+  background-color: rgba(255, 255, 255, 0.8);
+  padding: 20px;
+}
+.Rank_btn {
+  max-width: 100px;
+  position: absolute;
+  top: 6.7rem;
+  margin-left: 2%;
+  font-size: 15px;
+}
+.Close_btn {
+  color: black;
+  margin-bottom: 12px;
+  cursor: pointer;
+  font-size: 15px;
+}
+.Rank_btn:hover {
+  color: red;
+}
+.Close_btn:hover {
+  color: red;
+}
+.Rank_Data {
+  margin: 0 auto;
+}
+#tab {
+  margin: 0 auto;
+}
+.tr {
+  margin: 0 auto;
+}
+.td {
+  text-align: center;
+  vertical-align: middle;
 }
