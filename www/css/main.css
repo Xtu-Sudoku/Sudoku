@@ -67,6 +67,12 @@ body > * {
   /*每行 最下边的*/
   border-bottom-width: 2px;
 }
+.container .row > span.fixed {
+  background: #eeeeee;
+}
+.container .row > span.empty {
+  color: white;
+}
 /*按钮*/
 .dashboard {
   position: absolute;
