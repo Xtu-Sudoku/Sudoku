@@ -48,23 +48,30 @@ app.use(express.static(__dirname));
 
 app.get('/add', function (req, res) {
   var response = {
-    "name": req.query.name,
+    "upload_name": req.query.upload_name,
     "upload_time": req.query.upload_time,
     "upload_score": req.query.upload_score,
     "upload_checktime": req.query.upload_checktime
   };
 
-  var addsql = 'INSERT INTO score(username,timer,checktime,score,id) VALUES(?,?,?,?,?)';
-  var addsqlparams = [response.name, response.upload_time, response.upload_checktime, response.upload_score, id];
-  db.query(addsql, addsqlparams, function (err, result) {
-    if (err) {
-      console.log('[INSERT ERROR]-');
-      res.send('insert error');
-      return;
-    }
-    res.send('submit successfully');
-    res.end();
-  })
+  console.log("upload_name:",req.query.upload_name);
+
+  if(response.upload_name == 0){
+    res.send('name should be not null!');
+    return ;
+  }else{
+    var addsql = 'INSERT INTO score(username,timer,checktime,score,id) VALUES(?,?,?,?,?)';
+    var addsqlparams = [response.upload_name, response.upload_time, response.upload_checktime, response.upload_score, id];
+    db.query(addsql, addsqlparams, function (err, result) {
+      if (err) {
+        console.log('[INSERT ERROR]-');
+        res.send('insert error');
+        return;
+      }
+      res.send('submit successfully');
+      res.end();
+    })
+  }
 })
 
 var server = app.listen(3001, function () {
