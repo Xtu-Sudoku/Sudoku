@@ -2,7 +2,8 @@
 
 const Toolkit = require("./toolkit");
 
-class Generator{
+module.exports = class Generator{//要导出
+//class Generator{
     generate(){
         while(!this.internalGenerate()){
             console.warn("try again");
@@ -57,6 +58,6 @@ class Generator{
     }
 }
 
-   const generator = new Generator();
-   generator.generate();
-   console.log(generator.matrix);
+// const generator = new Generator();
+// generator.generate();
+// console.log(generator.matrix);

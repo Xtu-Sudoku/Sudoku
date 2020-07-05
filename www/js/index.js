@@ -124,6 +124,23 @@
 	        return Array.from({length:9},() => this.makeRow(v));//在此 是不能和前面一样的
 	        
 	    },
+	    
+	    //测试
+	    // const a=makeMatrix();
+	    // a[0][1]=2;
+	    // console.log(a);
+	    
+	    // Fisher-Yates 洗牌算法
+	    shuffle(array) { 
+	        const length = array.length;
+	        const endIndex = length -1;
+	        for(let i=0;i<endIndex;i++){
+	            const j = i + Math.floor(Math.random() * (length - i));
+	            [array[i],array[j]] = [array[j],array[i]];
+	        }
+	        return array;
+	    }, 
+	    
 	    //检查指定位置是否能够填写数字n
 	    checkFillable(matrix,n,rowIndex,colIndex){
 	        const row = matrix[rowIndex];
@@ -141,7 +158,7 @@
 	
 	//坐标系工具——坐标转换
 	const boxToolkit = {
-	    getBoxCells(matrix,boxIndex){
+	    getBoxCells(matrix,boxIndex){//格子的位置
 	        const startRowIndex = Math.floor(boxIndex / 3) * 3;
 	        const startColIndex = boxIndex % 3 * 3;
 	        const result = [];
@@ -152,14 +169,14 @@
 	        }
 	        return result;
 	    },
-	    convertToBoxIndex(rowIndex,colIndex){
+	    convertToBoxIndex(rowIndex,colIndex){//宫格的位置
 	        return{
 	            boxIndex: Math.floor(rowIndex / 3) * 3 + Math.floor(colIndex / 3),
 	            cellIndex: rowIndex % 3 * 3 + colIndex % 3
 	        };
 	    },
 	
-	    convertFromBoxIndex(boxIndex,cellIndex){
+	    convertFromBoxIndex(boxIndex,cellIndex){//宫格内格子的位置
 	        return{
 	            rowIndex: Math.floor(boxIndex / 3) * 3 + Math.floor(cellIndex / 3),
 	            colIndex:boxIndex % 3 * 3 + cellIndex % 3
