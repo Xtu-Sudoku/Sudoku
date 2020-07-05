@@ -16,9 +16,15 @@
         $(function () {
             $(".Rank_btn").click(function () {
                 $(".Rank_Content_Main").fadeIn();
-            });
+            })
             $(".Close_btn").click(function () {
                 $(".Rank_Content_Main").fadeOut();
+            })
+            $(".Rules_btn").click(function () {
+                $(".Rules_Content_Main").fadeIn();
+            });
+            $(".cRules_btn").click(function () {
+                $(".Rules_Content_Main").fadeOut();
             })
             
         });
@@ -33,11 +39,12 @@
         <h1>经典数独</h1>
     </div>
 
-    <!-- 计时器 -->
+    <!-- 计时器  排行榜 游戏规则-->
     <div class="count">
         <span id="count_h">00</span>:<span id="count_m">00</span>:<span id="count_s">00</span>
         
         <div class="Rank_btn">排行榜</div>
+        <div class="Rules_btn">游戏规则</div>
     </div>
 
     <!-- 九宫格 -->
@@ -64,6 +71,17 @@
                     <td>所用时间</td>
                 </tr>
             </table>
+        </div>
+    </div>
+
+	<div class="Rules_Content_Main">
+        <div class="Rules_Content">
+            <div class="cRules_btn">点击关闭</div>
+            <p style="font-size: 15px;">游戏规则：</p>
+            <p style="margin-left: 5%;line-height: 50px;font-size: 15px;">保证大宫格内的每行、每列的数据都是1-9，同时
+            		保证每个小宫格内的数据也是1-9，并且无重复，填满所有空格，即可完成游戏！祝大家玩的开心！！</p>
+            		
+            		<p style="margin-left: 5%;line-height: 50px;font-size: 15px;text-align: right;">制作人：刘阳、曾令涛</p>
         </div>
     </div>
 
