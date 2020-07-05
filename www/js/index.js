@@ -55,28 +55,6 @@
 	//创建一个popupNumbers对象，绑定弹出窗口
 	const popupNumbers = new PopupNumbers($("#popupNumbers"));
 	grid.bindPopup(popupNumbers);
-	
-	$("#check").on("click", e => {
-	    popupNumbers.hide();
-	    if (grid.check()) {
-	        alert("Congruations!");
-	    }
-	});
-	
-	$("#reset").on("click", e => {
-	    popupNumbers.hide();
-	    grid.reset();
-	});
-	
-	$("#clear").on("click", e => {
-	    popupNumbers.hide();
-	    grid.clear();
-	});
-	
-	$("#rebuild").on("click", e => {
-	    popupNumbers.hide();
-	    grid.rebuild();
-	});
 
 
 /***/ }),
@@ -137,67 +115,6 @@
 	            const $cell = $(e.target);
 	            popupNumbers.popup($cell);
 	        });
-	    }
-	
-	    //检查用户的结果，错误则进行标记
-	    check() {
-	        //获取需要检查的数据
-	        const $rows = this._$container.children();
-	        const data = $rows
-	            .map((rowIndex, div) => {
-	                return $(div).children()
-	                    .map((colIndex, span) => parseInt($(span).text()) || 0);
-	            })
-	            .toArray()
-	            .map($data => $data.toArray());
-	
-	        console.log(data);
-	
-	        const checker = new Checker(data);
-	        //检查成功
-	        if (checker.check()) {
-	            return true;
-	        }
-	
-	        //检查不成功
-	        const marks = checker.matrixMarks;
-	        this._$container.children()
-	            .each((rowIndex, div) => {
-	                $(div).children().each((colIndex, span) => {
-	                    const $span = $(span);
-	                    if ($span.is(".fixed") || marks[rowIndex][colIndex]) {
-	                        $span.removeClass("error");
-	                    } else {
-	                        $(span).addClass("error");
-	                    }
-	                })
-	            })
-	    }
-	
-	    //重置键盘到初始状态
-	    reset() {
-	        this._$container.find("span:not(.fixed)")
-	            .removeClass("error mark1 mark2")
-	            .addClass("empty")
-	            .text(0);
-	    }
-	
-	    //清理错误表示
-	    clear() {
-	        this._$container.find("span.error")
-	            .removeClass("error");
-	        this._$container.find("span.mark1")
-	            .removeClass("mark1");
-	        this._$container.find("span.mark2")
-	            .removeClass("mark2");
-	        
-	    }
-	
-	    //重新建立新的迷盘
-	    rebuild() {
-	        this._$container.empty();
-	        this.build();
-	        this.layout();
 	    }
 	
 	}

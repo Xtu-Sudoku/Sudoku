@@ -75,6 +75,14 @@ body > * {
   /*隐藏数字颜色调成背景色*/
   color: white;
 }
+.container .row > span.mark1 {
+  /*<----*/
+  background: #a7cfe2;
+}
+.container .row > span.mark2 {
+  /*<----*/
+  background: #c8e3a6;
+}
 /*弹框*/
 .popup-num {
   padding-left: 5%;

@@ -54,7 +54,6 @@ class Grid {
         });
     }
 
-
 }
 
 const generator = new Generator();
