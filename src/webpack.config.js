@@ -1,28 +1,24 @@
-
-
+const path = require('path');
+const webpack =require('webpack');
 module.exports = {
-    //导入
-    entry:{
-        index:"./js/index"
+    entry: {
+        index: "./js/index"
     },
-    //输出
-    output:{
-        filename:"[name].js"
+    output: {
+        filename: "[name].js"
     },
-    devtool:"source-map",
-    //主要处理文件
-    resolve:{
-        extensions:[".js"]
+    devtool: "source-map",
+    resolve: {
+        extensions: [".js"]
     },
-    module:{
-        loader:[
+    module: {
+        rules: [
             {
-                test:/\.js$/,
-                loader:"babel",
-                //排除文件
-                exclude:"node_modules",
-                query:{
-                    presets:["es2015"]
+                test: /\.js$/,
+                loader: "babel-loader",
+                exclude: [path.resolve(__dirname,"node_modules")],
+                query: {
+                    presets: ["es2015"]
                 }
             }
         ]

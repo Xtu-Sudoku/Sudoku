@@ -1,33 +1,27 @@
 const gulp = require("gulp");
+const GulpClient = require("gulp");
 
-
-gulp.task("webpack",() => {
-    //引用模块
+//转译 Javascript
+gulp.task("webpack", () => {
     const webpack = require("webpack-stream");
+    //对webpack进行配置，一般文件名为webpack.config.js
     const config = require("./webpack.config.js");
-    //源文件
     gulp.src("./js/**/*.js")
-        //输送给webpack
         .pipe(webpack(config))
-        //结果保存位置
         .pipe(gulp.dest("../www/js"));
 });
 
-
-gulp.task("less",() => {
+//编译 less -> css
+gulp.task("less", () => {
     const less = require("gulp-less");
-    //源文件
-    gulp.src("./less/**/*.less")
-        //输送给webpack
+    gulp.src("./less/*.less")
         .pipe(less())
-        //结果保存位置
         .pipe(gulp.dest("../www/css"));
 });
 
-gulp.task("default",["webpack","less"]);
+gulp.task("default", ["webpack", "less"]);
 
-//若文件有变动则自动编译
-gulp.task("watch",()=>{
-    gulp.watch("less/**/*.less",["less"]);
-    gulp.watch("js/**/*.js",["webpack"]);
+gulp.task("watch", () => {
+    gulp.watch("less/**/*.less", ["less"]);
+    gulp.watch("js/**/*.js", ["webpack"]);
 })

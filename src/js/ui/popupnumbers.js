@@ -1,14 +1,17 @@
-//处理弹出操作面板
+//处理弹出的操作面板
+//cell -- (click) --> popup
+//popup -- (click) --> n --> (fill) -->cell
+
+
 module.exports = class PopupNumbers {
     constructor($panel) {
         this._$panel = $panel.hide().removeClass("hidden");
 
-        $(".title").on("click", e => {
+        $(".title").on("click",e=>{
             this.hide();
         });
 
         this._$panel.on("click", "span", e => {
-            //$cell是弹出面板中的小格子
             const $cell = this._$targetCell;
             const $span = $(e.target);
 
@@ -41,7 +44,6 @@ module.exports = class PopupNumbers {
     }
 
     popup($cell) {
-        //通过成员变量获取cell
         this._$targetCell = $cell;
         const { left, top } = $cell.position();
         this._$panel
@@ -55,5 +57,4 @@ module.exports = class PopupNumbers {
     hide() {
         this._$panel.hide();
     }
-
 };

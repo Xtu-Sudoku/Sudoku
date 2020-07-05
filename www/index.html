@@ -1,35 +1,42 @@
 <!DOCTYPE html>
-<html lang="en">
+<html>
+
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0,user-scalable=no">
-    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no"/>
     <title>经典数独</title>
-    <link rel="stylesheet" type="text/css" href="css/main.css"/>
+    <link rel="stylesheet" type="text/css" href="css/main.css" />
 </head>
+
 <body>
-     <!--标题--> 
+    <!--标题-->
     <div class="title">
         <h1>经典数独</h1>
     </div>
-    
+
+    <!-- 计时器 -->
+    <div class="count">
+        <span id="count_h">00</span>:<span id="count_m">00</span>:<span id="count_s">00</span>
+    </div>
+
     <!-- 九宫格 -->
     <div id="container" class="container grid"></div>
-    
+
     <!-- 按钮 -->
     <div id="dashboard" class="dashboard">
         <div class="buttons">
-            <button type="button" id="check">提交</button>
-            <button type="button" id="reset">重置</button>
-            <button type="button" id="clear">清除</button>
+            <button type="button" id="check">提交结果</button>
+            <button type="button" id="reset">重置本局</button>
+            <button type="button" id="clear">清除标记</button>
             <button type="button" id="rebuild">重新开始</button>
         </div>
     </div>
-    
+
     <!-- 弹出面板（用于填入数字）： hidden style="position: absolute;left: 10px;top: 100px;"-->
-    <div id="popupNumbers" class="grid popup-num hidden" ><!--一开始不显示，要加入hidden属性，隐藏-->
+    <div id="popupNumbers" class="grid popup-num hidden">
+        <!--一开始不显示，要加入hidden属性，隐藏-->
         <div class="row">
-            <span>1</span><span>2</span><span>3</span><!--span之间不能有换行，不然样例之间会有间隔-->
+            <span>1</span><span>2</span><span>3</span>
         </div>
         <div class="row">
             <span>4</span><span>5</span><span>6</span>
@@ -41,8 +48,9 @@
             <span class="mark1"></span><span class="empty"></span><span class="mark2"></span>
         </div>
     </div>
-    
-    <script src="js/jquery-3.2.1.min.js"></script>
+
+    <script src="http://code.jquery.com/jquery-3.1.1.min.js"></script>
     <script src="js/index.js"></script>
 </body>
+
 </html>
