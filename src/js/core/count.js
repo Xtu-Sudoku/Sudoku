@@ -30,6 +30,16 @@ module.exports = class Count {
         $("#count_h")[0].innerHTML = "00";
     }
 
+    timer_cease() {
+        console.log("Innerstopnum", ctimer);
+        clearInterval(ctimer);
+        ctimer = null;
+        $("#count_s")[0].innerHTML = this.show_num(num % 60);;
+        $("#count_m")[0].innerHTML = this.show_num(parseInt(Math.floor(num / 60) % 60));;
+        $("#count_h")[0].innerHTML = this.show_num(parseInt(Math.floor(num / 60) / 60));
+        num = 0;
+    }
+
     show_num(n) {
         if (n < 10) {
             return '0' + n;

@@ -14,8 +14,8 @@ connection.connect((err) => {
     else { console.log("连接成功") }
 })
 
-var query = (sql, callback) => {
-    connection.query(sql, function (err, rows) {
+var query = (sql, params, callback) => {
+    connection.query(sql, params, function (err, rows) {
         callback(err, rows);
     });
 }

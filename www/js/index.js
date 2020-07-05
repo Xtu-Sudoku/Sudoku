@@ -58,14 +58,32 @@
 	const popupNumbers = new PopupNumbers($("#popupNumbers"));
 	grid.bindPopup(popupNumbers);
 	
-	
-	
-	
+	var checktime = 0;
 	$("#check").on("click", e => {
 	    popupNumbers.hide();
-	    if (grid.check()) {
+	    checktime++;
+	    console.log("checktime:", checktime);
+	    // if (grid.check()) {
+	        count.timer_cease();
 	        alert("Congruations!");
-	    }
+	        var stringtime = [];
+	        stringtime += $("#count_h")[0].innerHTML + ":" + $("#count_m")[0].innerHTML + ":" + $("#count_s")[0].innerHTML;
+	        console.log(typeof stringtime);
+	        console.log('h:m:s ->', stringtime);
+	        
+	        $("#upload_time").attr("value", stringtime);
+	        console.log("upload_time", $("#upload_time").attr("value"));
+	        console.log("lenth:", stringtime.length);
+	        
+	        $("#upload_checktime").attr("value", checktime);
+	        console.log("upload_checktime", $("#upload_checktime").attr("value"));
+	        
+	        var score = 80 + Math.random() * 20 - Math.random() * 2 - checktime;
+	        $("#upload_score").attr("value", Math.floor(score));
+	        console.log("upload_score", $("#upload_score").attr("value"));
+	        checktime = 0;
+	        stringtime = null;
+	    // }
 	});
 	
 	$("#reset").on("click", e => {
@@ -85,21 +103,23 @@
 	    count.onload();
 	});
 	
-	// $("#ranking").on("click", e => {
-	    $(function () {
-	        $.get('http://localhost:3000/', function (data) {
-	            for (let list of data) {
-	                let table = '<tr class="tbd"><td>';
-	                let s = '</td><td>';
-	                for (let ele of list) {
-	                    table += (ele + s);
-	                }
-	                table += '</td></tr>';
-	                $("#tab").append(table);
+	
+	$(function () {
+	    $.get('http://localhost:3000/', function (data) {
+	        for (let list of data) {
+	            let table = '<tr class="tbd"><td>';
+	            let s = '</td><td>';
+	            for (let ele of list) {
+	                table += (ele + s);
 	            }
-	        });
+	            table += '</td></tr>';
+	            $("#tab").append(table);
+	        }
 	    });
-	// });
+	});
+	
+	
+
 
 /***/ }),
 /* 1 */
@@ -611,6 +631,16 @@
 	        $("#count_s")[0].innerHTML = "00";
 	        $("#count_m")[0].innerHTML = "00";
 	        $("#count_h")[0].innerHTML = "00";
+	    }
+	
+	    timer_cease() {
+	        console.log("Innerstopnum", ctimer);
+	        clearInterval(ctimer);
+	        ctimer = null;
+	        $("#count_s")[0].innerHTML = this.show_num(num % 60);;
+	        $("#count_m")[0].innerHTML = this.show_num(parseInt(Math.floor(num / 60) % 60));;
+	        $("#count_h")[0].innerHTML = this.show_num(parseInt(Math.floor(num / 60) / 60));
+	        num = 0;
 	    }
 	
 	    show_num(n) {
